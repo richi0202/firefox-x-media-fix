@@ -7,3 +7,4 @@
 - Added MutationObserver support for dynamically loaded X posts.
 - Added technical investigation and reproduction notes.
 - Linked canonical WebCompat report #231657.
+- Successfully validated the packaged userscript against the affected reproduction in Firefox.
