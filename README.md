@@ -88,6 +88,8 @@ See [INVESTIGATION.md](./INVESTIGATION.md) for the full technical notes.
 
 ## Status
 
+**Workaround test: successful.** On 2026-08-14, the userscript was installed in Firefox and successfully repaired the affected reproduction post, confirming that the packaged userscript reproduces the earlier console workaround.
+
 This is a user-side workaround, not a Firefox or X patch. If Mozilla or X fixes the underlying layout problem, this project can be retired.
 
 Follow the upstream report for triage and resolution:
