@@ -2,13 +2,13 @@
 
 Temporary userscript workaround and technical investigation for an X/Twitter media layout bug in Firefox where some image wrappers collapse to almost zero width and the post shows a black/empty media area.
 
-**Original WebCompat report, reproduction, investigation, and width-collapse diagnosis by [@richi0202](https://github.com/richi0202).**
+**Independent WebCompat report, reproduction, investigation, width-collapse diagnosis, and userscript workaround by me, [@richi0202](https://github.com/richi0202).**
 
 ## Upstream tracking
 
-- Original report: [webcompat/web-bugs#231657](https://github.com/webcompat/web-bugs/issues/231657), opened by [@richi0202](https://github.com/richi0202) and later moved to Mozilla Bugzilla
-- Mozilla WebCompat report: [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532)
-- Underlying Gecko flexbox bug: [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502)
+- Independent WebCompat report: [webcompat/web-bugs#231657](https://github.com/webcompat/web-bugs/issues/231657), opened by me and later moved to Mozilla Bugzilla
+- Earlier Gecko/X report: [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), filed by Alice0775 with a separate `min-width: auto` workaround
+- Mozilla WebCompat report created from my WebCompat report: [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532)
 
 ## Current status
 
@@ -17,23 +17,23 @@ As of 2026-08-15:
 - X deployed a site-side mitigation for the affected layout on 2026-08-14.
 - Mozilla is still tracking the underlying Firefox/Gecko behavior separately in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), under **Core :: Layout: Flexbox**.
 - Mozilla has a reviewed Gecko patch attached to that still-open bug: **Make stretched cross-size computation earlier so it affects percentages.**
-- The userscript in this repository remains a user-side fallback and a record of the original real-world investigation. It is not a Firefox or X patch.
+- The userscript in this repository remains a user-side fallback and a record of my independent real-world investigation. It is not a Firefox or X patch.
 
 ## Investigation timeline
 
-- **2026-08-14:** [@richi0202](https://github.com/richi0202) opened [WebCompat #231657](https://github.com/webcompat/web-bugs/issues/231657) after reproducing the failure in Firefox and a fresh Firefox profile while the same post rendered normally in Chromium.
-- During that investigation, the media resource itself was confirmed to load correctly. The visible failure was narrowed to an inner media/flex branch collapsing from a roughly 598px-wide parent to about 1.95px and eventually about 0.283px wide while retaining its height.
-- Forcing the collapsed wrapper to `width: 100%`, `min-width: 100%`, and `flex-basis: 100%` made the image appear immediately without reloading the media resource. That finding became the basis of this userscript.
-- WebCompat reproduced the logged-in issue in Firefox Release and Nightly, but not Chrome, and moved the report to [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532).
+- **2026-08-14:** I independently opened [WebCompat #231657](https://github.com/webcompat/web-bugs/issues/231657) after reproducing the failure in Firefox and a fresh Firefox profile while the same post rendered normally in Chromium. An earlier Bugzilla report, [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), had been filed by Alice0775 about 1 hour 49 minutes earlier with a separate `min-width: auto` workaround.
+- During my WebCompat investigation, I independently narrowed the visible failure to an inner media/flex branch collapsing from a roughly 598px-wide parent to about 1.95px and eventually about 0.283px wide while retaining its height.
+- I confirmed that the media resource itself was loading correctly, then found that forcing the collapsed wrapper to `width: 100%`, `min-width: 100%`, and `flex-basis: 100%` made the image appear immediately without reloading the media resource. That finding became the basis of this userscript.
+- WebCompat reproduced my logged-in case in Firefox Release and Nightly, but not Chrome, and moved the report to [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532).
 - Mozilla contributors reduced the page to standalone testcases. [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) became the platform bug for the underlying `aspect-ratio`, percentage sizing, `min-width: 0`, and nested flexbox behavior.
-- The workaround in this repository was also tested against the separate `rabbit_wealth` reproduction from Bug 2063502. It restored the images and slideshow even though it takes a different approach from the `min-width: auto` workaround reported there.
+- I later tested the userscript against the separate `rabbit_wealth` reproduction from Bug 2063502. It restored both the images and slideshow despite using a different repair approach from Alice0775's `min-width: auto` workaround.
 - Mozilla layout developers concluded the reduced behavior is a Gecko bug and began work on an engine-level fix. X separately deployed a site-side mitigation on 2026-08-14.
 
 ## What this fixes
 
 On some X image posts in Firefox, the image resource itself loads and decodes successfully, but an inner flex/media wrapper collapses to almost zero width. The post keeps its height, so the media area looks black or empty.
 
-Observed on the original affected reproduction:
+Observed on the original affected reproduction from my WebCompat report:
 
 ```text
 598.33px parent
@@ -47,9 +47,9 @@ The tested workaround restores the collapsed wrapper to the available width. The
 
 ## Validated cases
 
-The userscript was verified against more than one real-world X layout:
+I verified the userscript against more than one real-world X layout:
 
-1. Original reproduction from WebCompat #231657:
+1. My WebCompat #231657 reproduction:
    https://x.com/TheOmniLiberal/status/2085153460966633725
 
    The missing media became visible immediately after the collapsed wrapper was repaired.
@@ -59,11 +59,11 @@ The userscript was verified against more than one real-world X layout:
 
    The images displayed normally and the slideshow worked as expected with the userscript enabled.
 
-This second case uses the same general width-collapse failure but the workaround here is different from the `min-width: auto` CSS workaround documented in Bug 2063502. This script detects the media branch after it has collapsed and repairs that branch only.
+This second case uses the same general width-collapse failure, but my workaround is different from the `min-width: auto` CSS workaround documented in Bug 2063502. My script detects the media branch after it has collapsed and repairs that branch only.
 
 ## Reproduction
 
-Original affected post:
+Original affected post from my WebCompat report:
 
 https://x.com/TheOmniLiberal/status/2085153460966633725
 
@@ -71,7 +71,7 @@ Working comparison:
 
 https://x.com/Awk20000/status/2088009701476995124
 
-Test environment used for the original investigation:
+Test environment used for my original investigation:
 
 - Windows 10
 - Firefox 153.0.4
@@ -98,13 +98,13 @@ Normal media that already has a valid width is left alone.
 
 ## Why this is not a blanket CSS override
 
-A global rule such as `width: 100% !important` on X media containers could break legitimate layouts. This userscript instead detects the same geometry failure found during the investigation and repairs only the collapsed branch.
+A global rule such as `width: 100% !important` on X media containers could break legitimate layouts. This userscript instead detects the same geometry failure I found during the investigation and repairs only the collapsed branch.
 
 It also listens for X's dynamically inserted content, so newly loaded posts can be repaired while scrolling.
 
 ## Investigation summary
 
-The original debugging ruled out several common causes:
+My original debugging ruled out several common causes:
 
 - direct `pbs.twimg.com/media/...` URLs render normally in Firefox;
 - the media elements report non-zero `naturalWidth` / `naturalHeight`;
@@ -139,9 +139,9 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Credit
 
-Original WebCompat report, real-world reproduction, DOM comparison, width-collapse diagnosis and measurements, and user-side workaround: **[@richi0202](https://github.com/richi0202)**.
+I independently filed the WebCompat report, reproduced the real-world failure, compared the DOM/layout behavior, measured the width collapse, and built the reusable userscript workaround documented in this repository.
 
-Mozilla/WebCompat contributors subsequently produced reduced standalone testcases, connected the failure to the underlying Gecko flexbox behavior, and are working on the browser-engine fix. See [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) for the upstream investigation and contributor history.
+The earlier Bugzilla report and `min-width: auto` workaround were filed by **Alice0775** in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502). Mozilla/WebCompat contributors later produced reduced standalone testcases, connected the failure to the underlying Gecko flexbox behavior, and worked on the browser-engine fix. See [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) for the upstream investigation and contributor history.
 
 ## License
 
