@@ -1,0 +1,111 @@
+name: Bug report
+description: Report another Firefox/X media case or a problem with the userscript
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping test this Firefox/X media-layout issue.
+
+        Please use a safe/public X post when possible. Do not upload HAR files or anything containing cookies, session tokens, or private account data.
+
+        For the upstream Firefox investigation, see Mozilla Bugzilla [2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502).
+
+  - type: input
+    id: firefox-version
+    attributes:
+      label: Firefox version
+      description: Example: 153.0.4, Nightly 156.0a1
+      placeholder: Firefox version
+    validations:
+      required: true
+
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating system
+      description: Include the OS version if you know it.
+      placeholder: Example: Windows 10, macOS 15, Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: input
+    id: affected-url
+    attributes:
+      label: Affected URL
+      description: Prefer a safe/public reproduction that others can open.
+      placeholder: https://x.com/...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: logged-in
+    attributes:
+      label: Does it reproduce while logged into X?
+      options:
+        - "Yes"
+        - "No"
+        - "I have not tested this"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: chromium
+    attributes:
+      label: Does the same URL work in Chromium/Chrome/Brave?
+      options:
+        - "Yes"
+        - "No"
+        - "I have not tested this"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: script-result
+    attributes:
+      label: Does firefox-x-media-fix.user.js repair it?
+      options:
+        - "Yes, completely"
+        - "Partially"
+        - "No"
+        - "I have not tested the userscript"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: What happens?
+      description: Describe what you see, including whether images are blank, black, collapsed into vertical lines, or whether a slideshow/carousel fails.
+      placeholder: Describe the broken behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: What should happen?
+      placeholder: Describe the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Optional layout measurements
+      description: If you inspected the DOM, include width/height measurements for the media element and its first several ancestors.
+      render: text
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or other notes
+      description: Drag screenshots here if useful. Please remove private account information first.
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I have not included cookies, session tokens, private HAR data, or other sensitive account information.
+          required: true
