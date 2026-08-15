@@ -1,5 +1,5 @@
-name: Bug report
-description: Report another Firefox/X media case or a problem with the userscript
+name: "Bug report"
+description: "Report another Firefox/X media case or a problem with the userscript"
 title: "[Bug] "
 body:
   - type: markdown
@@ -14,34 +14,34 @@ body:
   - type: input
     id: firefox-version
     attributes:
-      label: Firefox version
-      description: Example: 153.0.4, Nightly 156.0a1
-      placeholder: Firefox version
+      label: "Firefox version"
+      description: "Example: 153.0.4, Nightly 156.0a1"
+      placeholder: "Firefox version"
     validations:
       required: true
 
   - type: input
     id: operating-system
     attributes:
-      label: Operating system
-      description: Include the OS version if you know it.
-      placeholder: Example: Windows 10, macOS 15, Ubuntu 24.04
+      label: "Operating system"
+      description: "Include the OS version if you know it."
+      placeholder: "Example: Windows 10, macOS 15, Ubuntu 24.04"
     validations:
       required: true
 
   - type: input
     id: affected-url
     attributes:
-      label: Affected URL
-      description: Prefer a safe/public reproduction that others can open.
-      placeholder: https://x.com/...
+      label: "Affected URL"
+      description: "Prefer a safe/public reproduction that others can open."
+      placeholder: "https://x.com/..."
     validations:
       required: true
 
   - type: dropdown
     id: logged-in
     attributes:
-      label: Does it reproduce while logged into X?
+      label: "Does it reproduce while logged into X?"
       options:
         - "Yes"
         - "No"
@@ -52,7 +52,7 @@ body:
   - type: dropdown
     id: chromium
     attributes:
-      label: Does the same URL work in Chromium/Chrome/Brave?
+      label: "Does the same URL work in Chromium/Chrome/Brave?"
       options:
         - "Yes"
         - "No"
@@ -63,7 +63,7 @@ body:
   - type: dropdown
     id: script-result
     attributes:
-      label: Does firefox-x-media-fix.user.js repair it?
+      label: "Does firefox-x-media-fix.user.js repair it?"
       options:
         - "Yes, completely"
         - "Partially"
@@ -75,37 +75,37 @@ body:
   - type: textarea
     id: actual-result
     attributes:
-      label: What happens?
-      description: Describe what you see, including whether images are blank, black, collapsed into vertical lines, or whether a slideshow/carousel fails.
-      placeholder: Describe the broken behavior.
+      label: "What happens?"
+      description: "Describe what you see, including whether images are blank, black, collapsed into vertical lines, or whether a slideshow/carousel fails."
+      placeholder: "Describe the broken behavior."
     validations:
       required: true
 
   - type: textarea
     id: expected-result
     attributes:
-      label: What should happen?
-      placeholder: Describe the expected behavior.
+      label: "What should happen?"
+      placeholder: "Describe the expected behavior."
     validations:
       required: true
 
   - type: textarea
     id: measurements
     attributes:
-      label: Optional layout measurements
-      description: If you inspected the DOM, include width/height measurements for the media element and its first several ancestors.
+      label: "Optional layout measurements"
+      description: "If you inspected the DOM, include width/height measurements for the media element and its first several ancestors."
       render: text
 
   - type: textarea
     id: screenshots
     attributes:
-      label: Screenshots or other notes
-      description: Drag screenshots here if useful. Please remove private account information first.
+      label: "Screenshots or other notes"
+      description: "Drag screenshots here if useful. Please remove private account information first."
 
   - type: checkboxes
     id: privacy
     attributes:
-      label: Privacy check
+      label: "Privacy check"
       options:
-        - label: I have not included cookies, session tokens, private HAR data, or other sensitive account information.
+        - label: "I have not included cookies, session tokens, private HAR data, or other sensitive account information."
           required: true
