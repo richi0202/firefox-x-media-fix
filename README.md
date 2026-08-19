@@ -18,8 +18,7 @@ As of 2026-08-19:
 - Mozilla resolved the underlying Gecko flexbox bug, [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), as **FIXED** for Firefox 156. The engine fix is **Make stretched cross-size computation earlier so it affects percentages.**
 - Mozilla marked Firefox 154, Firefox 155, ESR 115, ESR 140, and ESR 153 as `wontfix` for this bug, so the engine fix is not currently planned for backport to those branches.
 - The original logged-in X reproduction from [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) has been verified working in the latest Nightly.
-- [Issue #2](https://github.com/richi0202/firefox-x-media-fix/issues/2) reported additional failures on Firefox 115.39.0esr on Windows 7. I independently reproduced the same media-width collapse using Firefox 115.39.0esr 64-bit on Windows 10 in a clean test profile, showing that Windows 7 is not required to reproduce the failure. Version 1.0.1 repairs all three reported reproduction URLs in my Windows 10 testing; confirmation on the reporter's Windows 7 environment is still pending.
-- The userscript in this repository remains a user-side fallback, particularly for affected older Firefox branches, and a record of my independent real-world investigation. It is not a Firefox or X patch.
+- [Issue #2](https://github.com/richi0202/firefox-x-media-fix/issues/2) reported additional failures on Firefox 115.39.0esr on Windows 7. I independently reproduced the same media-width collapse using Firefox 115.39.0esr 64-bit on Windows 10 in a clean test profile, showing that Windows 7 is not required to reproduce the failure. Version 1.0.1 repairs all three reported reproduction URLs in my Windows 10 testing.
 
 ## Investigation timeline
 
