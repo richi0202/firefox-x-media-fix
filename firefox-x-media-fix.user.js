@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Firefox X Media Fix
 // @namespace    https://github.com/richi0202/firefox-x-media-fix
-// @version      1.0.0
+// @version      1.0.1
 // @description  Repairs X/Twitter media wrappers that collapse to near-zero width in Firefox.
 // @author       richi0202
 // @match        https://x.com/*
@@ -15,42 +15,36 @@
 
   if (!/Firefox\//.test(navigator.userAgent)) return;
 
-  const MEDIA_URL_FRAGMENT = 'pbs.twimg.com/media';
   const MAX_COLLAPSED_WIDTH = 10;
   const MIN_PARENT_WIDTH = 100;
   const MIN_MEDIA_HEIGHT = 80;
 
-  function hasMediaBackground(el) {
-    try {
-      return getComputedStyle(el).backgroundImage.includes(MEDIA_URL_FRAGMENT);
-    } catch {
-      return false;
-    }
+  const WRAPPER_SELECTOR =
+    'div[data-testid="ScrollSnap-List"] > div[role="presentation"]';
+
+  const MEDIA_SELECTOR = '[data-testid="tweetPhoto"], video, img';
+
+  let scheduled = false;
+
+  function isCollapsed(wrapper) {
+    if (!wrapper || !wrapper.parentElement) return false;
+
+    const rect = wrapper.getBoundingClientRect();
+    const parentRect = wrapper.parentElement.getBoundingClientRect();
+
+    return (
+      rect.width < MAX_COLLAPSED_WIDTH &&
+      rect.height >= MIN_MEDIA_HEIGHT &&
+      parentRect.width > MIN_PARENT_WIDTH
+    );
   }
 
-  function findCollapsedWrapper(media) {
-    let current = media;
-
-    while (current && current.parentElement) {
-      const rect = current.getBoundingClientRect();
-      const parentRect = current.parentElement.getBoundingClientRect();
-
-      if (
-        rect.width < MAX_COLLAPSED_WIDTH &&
-        rect.height >= MIN_MEDIA_HEIGHT &&
-        parentRect.width > MIN_PARENT_WIDTH
-      ) {
-        return current;
-      }
-
-      current = current.parentElement;
-    }
-
-    return null;
+  function containsMedia(wrapper) {
+    return Boolean(wrapper.querySelector(MEDIA_SELECTOR));
   }
 
   function repairWrapper(wrapper) {
-    if (!wrapper || wrapper.dataset.firefoxXMediaFixed === '1') return false;
+    if (!containsMedia(wrapper) || !isCollapsed(wrapper)) return false;
 
     wrapper.style.setProperty('width', '100%', 'important');
     wrapper.style.setProperty('min-width', '100%', 'important');
@@ -60,37 +54,21 @@
     return true;
   }
 
-  function repairMedia(media) {
-    const wrapper = findCollapsedWrapper(media);
-    return repairWrapper(wrapper);
-  }
-
-  function scan(root = document) {
-    const nodes = [];
-
-    if (root.nodeType === Node.ELEMENT_NODE && hasMediaBackground(root)) {
-      nodes.push(root);
+  function scan() {
+    for (const wrapper of document.querySelectorAll(WRAPPER_SELECTOR)) {
+      repairWrapper(wrapper);
     }
-
-    if (root.querySelectorAll) {
-      for (const el of root.querySelectorAll('*')) {
-        if (hasMediaBackground(el)) nodes.push(el);
-      }
-    }
-
-    for (const media of nodes) repairMedia(media);
   }
-
-  let scheduled = false;
 
   function scheduleScan() {
     if (scheduled) return;
+
     scheduled = true;
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       scheduled = false;
-      scan(document);
-    });
+      scan();
+    }, 50);
   }
 
   const observer = new MutationObserver(scheduleScan);
@@ -102,9 +80,10 @@
     attributeFilter: ['style', 'class']
   });
 
-  scan(document);
+  scan();
 
   // X can finish sizing media after initial insertion.
-  setTimeout(scheduleScan, 500);
-  setTimeout(scheduleScan, 1500);
+  setTimeout(scan, 250);
+  setTimeout(scan, 750);
+  setTimeout(scan, 1500);
 })();

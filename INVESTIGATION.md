@@ -120,13 +120,52 @@ That established the width-collapse as the proximate cause of the visible failur
 A blanket X CSS override could disturb legitimate image and carousel layouts. The userscript therefore only applies the width repair when:
 
 - Firefox is the current browser;
-- the branch contains an X media background URL;
+- the candidate is an X `ScrollSnap-List` presentation wrapper containing image or video media;
 - the candidate element is less than 10px wide;
 - the parent is more than 100px wide;
 - the candidate has substantial media-like height.
 
 This is intended to match the geometry observed in the bug while leaving normal X media alone.
 
+## Firefox 115 ESR follow-up
+
+Issue #2 provided three additional X posts that remained affected on Firefox 115.39.0esr.
+
+I reproduced the failures independently using:
+
+- Windows 10 19044
+- Firefox 115.39.0esr 64-bit
+- a clean dedicated Firefox profile
+- a logged-in X session
+- no `user.js` preference overrides
+
+The three reported reproduction URLs were:
+
+https://x.com/Maks_NAFO_FELLA/status/2090119570988187677
+
+https://x.com/Maks_NAFO_FELLA/status/2090090578989973950
+
+https://x.com/Maks_NAFO_FELLA/status/2090030688581898595
+
+One affected video reproduction did not contain either a `pbs.twimg.com/media` background element or a matching `<img>` element, so version 1.0.0 did not detect it.
+
+Inspecting the collapsed carousel showed approximately:
+
+```text
+collapsed presentation wrapper: 2px
+parent presentation branch:     2px
+ScrollSnap-List parent:        598px
+media height:                  ~500px
+```
+
+The affected branch was a direct presentation child of X's `ScrollSnap-List` and contained video media.
+
+This showed that the geometry failure was still present, but the original userscript's media-discovery method was too specific to image-background layouts.
+
+Version 1.0.1 therefore targets X media carousel presentation wrappers directly and only repairs them when the same collapsed-width geometry is present.
+
+The revised userscript repaired all three issue #2 reproduction URLs in Firefox 115.39.0esr on Windows 10, including repeated image/slideshow navigation. The two previously documented real-world reproductions were also retested successfully before the 1.0.1 release.
+
 ## Current interpretation
 
-The evidence supports a Firefox/X web-compatibility layout failure involving X's media/flex wrapper structure. The investigation does not by itself prove whether the underlying defect belongs to Gecko layout behavior, X's CSS/component logic, or an interaction between the two.
+The evidence supports a Firefox/X web-compatibility layout failure involving X's media/flex wrapper structure. Mozilla's reduced testcases and subsequent layout investigation connected the failure to a Gecko flexbox sizing bug, which was fixed for Firefox 156. X separately deployed a site-side mitigation, but affected older Firefox branches can still encounter layouts that reproduce the underlying width-collapse behavior.
