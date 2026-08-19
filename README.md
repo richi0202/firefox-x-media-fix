@@ -12,12 +12,14 @@ Temporary userscript workaround and technical investigation for an X/Twitter med
 
 ## Current status
 
-As of 2026-08-15:
+As of 2026-08-19:
 
 - X deployed a site-side mitigation for the affected layout on 2026-08-14.
-- Mozilla is still tracking the underlying Firefox/Gecko behavior separately in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), under **Core :: Layout: Flexbox**.
-- Mozilla has a reviewed Gecko patch attached to that still-open bug: **Make stretched cross-size computation earlier so it affects percentages.**
-- The userscript in this repository remains a user-side fallback and a record of my independent real-world investigation. It is not a Firefox or X patch.
+- Mozilla resolved the underlying Gecko flexbox bug, [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502), as **FIXED** for Firefox 156. The engine fix is **Make stretched cross-size computation earlier so it affects percentages.**
+- Mozilla marked Firefox 154, Firefox 155, ESR 115, ESR 140, and ESR 153 as `wontfix` for this bug, so the engine fix is not currently planned for backport to those branches.
+- The original logged-in X reproduction from [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) has been verified working in the latest Nightly.
+- [Issue #2](https://github.com/richi0202/firefox-x-media-fix/issues/2) reports that Firefox 115.39.0esr on Windows 7 can still reproduce the X media failure. I am waiting for a specific public reproduction URL and a userscript test before counting that environment as another validated userscript case.
+- The userscript in this repository remains a user-side fallback, particularly for affected older Firefox branches, and a record of my independent real-world investigation. It is not a Firefox or X patch.
 
 ## Investigation timeline
 
@@ -27,7 +29,7 @@ As of 2026-08-15:
 - WebCompat reproduced my logged-in case in Firefox Release and Nightly, but not Chrome, and moved the report to [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532).
 - Mozilla contributors reduced the page to standalone testcases. [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) became the platform bug for the underlying `aspect-ratio`, percentage sizing, `min-width: 0`, and nested flexbox behavior.
 - I later tested the userscript against the separate `rabbit_wealth` reproduction from Bug 2063502. It restored both the images and slideshow despite using a different repair approach from Alice0775's `min-width: auto` workaround.
-- Mozilla layout developers concluded the reduced behavior is a Gecko bug and began work on an engine-level fix. X separately deployed a site-side mitigation on 2026-08-14.
+- Mozilla layout developers concluded the reduced behavior is a Gecko bug. The first landing was backed out after test failures, then the corrected fix landed in mozilla-central and Bug 2063502 was resolved **FIXED** for Firefox 156. Older release and ESR branches were marked `wontfix`. X separately deployed its site-side mitigation on 2026-08-14.
 
 ## What this fixes
 
@@ -141,7 +143,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 I independently filed the WebCompat report, reproduced the real-world failure, compared the DOM/layout behavior, measured the width collapse, and built the reusable userscript workaround documented in this repository.
 
-The earlier Bugzilla report and `min-width: auto` workaround were filed by **Alice0775** in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502). Mozilla/WebCompat contributors later produced reduced standalone testcases, connected the failure to the underlying Gecko flexbox behavior, and worked on the browser-engine fix. See [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) for the upstream investigation and contributor history.
+The earlier Bugzilla report and `min-width: auto` workaround were filed by **Alice0775** in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502). Mozilla/WebCompat contributors later produced reduced standalone testcases, connected the failure to the underlying Gecko flexbox behavior, and landed the browser-engine fix for Firefox 156. See [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) for the upstream investigation and contributor history.
 
 ## License
 
