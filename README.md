@@ -119,6 +119,20 @@ The script only runs on `x.com` / `twitter.com`, only activates in Firefox, and 
 
 Normal media that already has a valid width is left alone.
 
+## uBlock Origin alternative (community-provided, untested)
+
+In [issue #4](https://github.com/richi0202/firefox-x-media-fix/issues/4), [@dev31337](https://github.com/dev31337) contributed the following uBlock Origin filter and reported that it completely fixes the problem on Firefox 115.39 ESR on Windows 7:
+
+```text
+x.com,twitter.com##div[data-testid="ScrollSnap-List"] > div[role="presentation"]:has([data-testid="tweetPhoto"], video, img):style(width: 100% !important; min-width: 100% !important; flex-basis: 100% !important;)
+```
+
+This filter has **not been independently tested by me** and is not maintained as part of the userscript. It is included here as a community-provided alternative for users who prefer uBlock Origin instead of a userscript manager.
+
+There is an important behavioral difference between this filter and the userscript. The uBlock Origin rule applies the `width: 100%`, `min-width: 100%`, and `flex-basis: 100%` override whenever that matching X media structure is present. The userscript is more selective: it first checks whether the media wrapper has actually collapsed, whether its parent has a usable width, and whether the wrapper has enough height to look like real media before applying the repair.
+
+Because the uBlock Origin rule does not perform those geometry checks, it is broader and could potentially affect legitimate X media layouts that the userscript would leave unchanged. X DOM changes could also cause the filter to stop matching or behave differently in the future.
+
 ## Why this is not a blanket CSS override
 
 A global rule such as `width: 100% !important` on X media containers could break legitimate layouts. This userscript instead detects the same geometry failure I found during the investigation and repairs only the collapsed X carousel presentation wrapper.
@@ -167,6 +181,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 I independently filed the WebCompat report, reproduced the real-world failure, compared the DOM/layout behavior, measured the width collapse, and built the reusable userscript workaround documented in this repository.
 
 The earlier Bugzilla report and `min-width: auto` workaround were filed by **Alice0775** in [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502). Mozilla/WebCompat contributors later produced reduced standalone testcases, connected the failure to the underlying Gecko flexbox behavior, and landed the browser-engine fix for Firefox 156. See [Bug 2063532](https://bugzilla.mozilla.org/show_bug.cgi?id=2063532) and [Bug 2063502](https://bugzilla.mozilla.org/show_bug.cgi?id=2063502) for the upstream investigation and contributor history.
+
+The untested uBlock Origin alternative documented above was contributed by [@dev31337](https://github.com/dev31337) in [issue #4](https://github.com/richi0202/firefox-x-media-fix/issues/4).
 
 ## License
 
